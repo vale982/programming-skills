@@ -1,0 +1,26 @@
+{
+  "C": [
+    {
+      "id": 1,
+      "level": 1,
+      "text": "Alloca un puntatore a int per 120 elementi."
+    },
+    {
+      "id": 2,
+      "level": 2,
+      "text": "Scrivi una funzione che calcola la lunghezza di una stringa."
+    }
+  ],
+  "Python": [
+    {
+      "id": 1,
+      "level": 1,
+      "text": "Stampa i numeri da 1 a 10."
+    },
+    {
+      "id": 2,
+      "level": 2,
+      "text": "Data una lista di numeri, restituisci solo quelli pari."
+    }
+  ]
+}
