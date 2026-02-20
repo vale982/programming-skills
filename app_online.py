@@ -227,30 +227,29 @@ if st.button("Invia risposta"):
     # Salva in sessione
     st.session_state.answers.append(risposta)
 
-# -----------------------------
-# SALVATAGGIO SU GOOGLE SHEETS
-# -----------------------------
-sheet = get_sheet()
+    # -----------------------------
+    # SALVATAGGIO SU GOOGLE SHEETS
+    # -----------------------------
+    sheet = get_sheet()
 
-sheet.append_row([
-    risposta["timestamp"],
-    risposta["utente"],
-    risposta["linguaggio"],
-    risposta["domanda_id"],
-    risposta["livello"],
-    risposta["modalita"],
-    risposta["codice"],
-    risposta["tempo_secondi"],
-    risposta["ai_suggestion"]
-])
-
+    sheet.append_row([
+        risposta["timestamp"],
+        risposta["utente"],
+        risposta["linguaggio"],
+        risposta["domanda_id"],
+        risposta["livello"],
+        risposta["modalita"],
+        risposta["codice"],
+        risposta["tempo_secondi"],
+        risposta["ai_suggestion"]
+    ])
 
     st.success(f"Risposta salvata! Tempo impiegato: {elapsed:.2f} secondi")
-
 
     # Passa alla prossima domanda
     st.session_state.start_time = None
     st.session_state.current_index += 1
     st.rerun()
+
     
     
