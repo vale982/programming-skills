@@ -19,4 +19,4 @@ Le risposte vengono salvate in un file CSV insieme a:
 ### In locale
 ```bash
 pip install -r requirements.txt
-streamlit run app.py
+streamlit run app_online.py
