@@ -22,7 +22,7 @@ def get_sheet():
     client = gspread.authorize(creds)
 
     # Sostituisci con l’URL del tuo Google Sheet
-    sheet = client.open_by_url("https://docs.google.com/spreadsheets/d/1UYwvWyno6wP98t6bKckYjmHdP0W3ixi0Z_hPui5Lfyg/edit?gid=0#gid=0").sheet1
+    sheet = client.open_by_url("https://docs.google.com/spreadsheets/d/1UYwvWyno6wP98t6bKckYjmHdP0W3ixi0Z_hPui5Lfyg").sheet1
     return sheet
 
 
