@@ -76,13 +76,11 @@ if st.session_state.fase == "intro":
 
     linguaggio = st.selectbox("Scegli il linguaggio", list(QUESTIONS.keys()))
 
-    # Nuova domanda 1
     esperienza_bool = st.radio(
         "Hai mai scritto codice in questo linguaggio?",
         ["Sì", "No"]
     )
 
-    # Nuova domanda 2
     esperienza_livello = st.slider(
         "Quanto ti senti esperto da 1 a 5?",
         min_value=1, max_value=5, value=3
@@ -99,7 +97,7 @@ if st.session_state.fase == "intro":
         st.session_state.esperienza_bool = esperienza_bool
         st.session_state.esperienza_livello = esperienza_livello
 
-        # Randomizza le domande una sola volta
+        # Randomizza UNA SOLA VOLTA per entrambe le fasi
         domande = QUESTIONS[linguaggio]
         random.shuffle(domande)
         st.session_state.domande_random = domande
@@ -108,6 +106,7 @@ if st.session_state.fase == "intro":
         st.rerun()
 
     st.stop()
+
 
 
 # -----------------------------
@@ -153,8 +152,9 @@ if st.session_state.current_index >= len(domande):
 # MOSTRA DOMANDA CORRENTE
 # -----------------------------
 domanda = domande[st.session_state.current_index]
+numero_domanda = st.session_state.current_index + 1
 
-st.subheader(f"Domanda {domanda['id']}")
+st.subheader(f"Domanda {numero_domanda}")
 
 st.markdown(
     f"<div style='font-size:22px; line-height:1.5;'>{domanda['text']}</div>",
