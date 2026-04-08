@@ -2,25 +2,43 @@
   "C": [
     {
       "id": 1,
-      "level": 1,
-      "text": "Alloca un puntatore a int per 120 elementi."
+      "text": "Alloca in C un puntatore dinamico di 30 valori interi."
     },
     {
       "id": 2,
-      "level": 2,
-      "text": "Scrivi una funzione che calcola la lunghezza di una stringa."
+      "text": "Scorri in C un vettore statico di 30 elementi e scrivi 1 nella quindicesima posizione."
+    },
+	{
+      "id": 3,
+      "text": "Somma in C due vettori statici di 10 elementi inizializzati a 1 e stampa a video il risultato."
     }
   ],
   "Python": [
     {
       "id": 1,
-      "level": 1,
-      "text": "Stampa i numeri da 1 a 10."
+      "text": "Moltiplica in Python due vettori di 10 elementi contenenti 1."
     },
     {
       "id": 2,
-      "level": 2,
-      "text": "Data una lista di numeri, restituisci solo quelli pari."
+      "text": "Crea in Python una matrice 4x4 e inizializzala a 2."
+    },
+	{
+      "id": 3,
+      "text": "Crea in Python una stringa, copia dentro la frase \"Hello World\" e conta il numero di \"l\"."
+    }
+  ],
+  "Matlab": [
+    {
+      "id": 1,
+      "text": "Crea in Matlab un vettore di 12 elementi, ponili uguale a 1 e somma tutti gli elementi del vettore."
+    },
+    {
+      "id": 2,
+      "text": "Costruisci in Matlab una matrice 5x5, poni sulla diagonale il valore 2 e somma tutte le righe."
+    },
+	{
+      "id": 3,
+      "text": "Crea in Matlab un segnale random lungo 64 campioni e calcola la sua risposta in frequenza."
     }
   ]
 }
