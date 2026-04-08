@@ -4,6 +4,7 @@ import time
 import pandas as pd
 import os
 from datetime import datetime
+import random
 import gspread
 from google.oauth2.service_account import Credentials
 
@@ -21,8 +22,9 @@ def get_sheet():
 
     client = gspread.authorize(creds)
 
-    # Sostituisci con l’URL del tuo Google Sheet
-    sheet = client.open_by_url("https://docs.google.com/spreadsheets/d/1UYwvWyno6wP98t6bKckYjmHdP0W3ixi0Z_hPui5Lfyg").sheet1
+    sheet = client.open_by_url(
+        "https://docs.google.com/spreadsheets/d/1UYwvWyno6wP98t6bKckYjmHdP0W3ixi0Z_hPui5Lfyg"
+    ).sheet1
     return sheet
 
 
@@ -32,38 +34,20 @@ def get_sheet():
 with open("questions.json", "r", encoding="utf-8") as f:
     QUESTIONS = json.load(f)
 
+
 # -----------------------------
 # CONFIGURAZIONE PAGINA
 # -----------------------------
 st.set_page_config(page_title="Test Programming Skill", layout="wide")
-st.markdown("""
-    <style>
-        /* Stile personalizzato per il pulsante "Chiedi aiuto all'AI" */
-        div.stButton > button:first-child {
-            background-color: #4da6ff !important;   /* azzurro */
-            color: white !important;
-            border-radius: 8px !important;
-            padding: 10px 20px !important;
-            font-size: 18px !important;
-            border: none !important;
-        }
-
-        /* Hover effect */
-        div.stButton > button:first-child:hover {
-            background-color: #1a8cff !important;
-            color: white !important;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
 
 st.title("Valutazione delle skill di programmazione con / senza AI")
+
 
 # -----------------------------
 # SESSION STATE
 # -----------------------------
 if "fase" not in st.session_state:
-    st.session_state.fase = "intro"   # nuova fase iniziale
+    st.session_state.fase = "intro"
 
 if "current_index" not in st.session_state:
     st.session_state.current_index = 0
@@ -74,32 +58,35 @@ if "start_time" not in st.session_state:
 if "answers" not in st.session_state:
     st.session_state.answers = []
 
-if "codice" not in st.session_state:
-    st.session_state.codice = ""   # per pulire il text_area
+if "domande_random" not in st.session_state:
+    st.session_state.domande_random = []
+
+if "extra_q_done" not in st.session_state:
+    st.session_state.extra_q_done = False
+
 
 # -----------------------------
-# FASE INTRO: NOME + LINGUAGGIO
+# FASE INTRO: NOME + LINGUAGGIO + 2 NUOVE DOMANDE
 # -----------------------------
 if st.session_state.fase == "intro":
-    st.markdown(
-    "<h2 style='font-size:28px; margin-bottom:10px;'>Inserisci i tuoi dati per iniziare</h2>",
-    unsafe_allow_html=True
+
+    st.subheader("Inserisci i tuoi dati per iniziare")
+
+    utente = st.text_input("ID Utente (obbligatorio)", "")
+
+    linguaggio = st.selectbox("Scegli il linguaggio", list(QUESTIONS.keys()))
+
+    # Nuova domanda 1
+    esperienza_bool = st.radio(
+        "Hai mai scritto codice in questo linguaggio?",
+        ["Sì", "No"]
     )
 
-    st.markdown(
-        "<div style='font-size:20px; margin-bottom:5px;'>ID Utente (obbligatorio)</div>",
-        unsafe_allow_html=True
+    # Nuova domanda 2
+    esperienza_livello = st.slider(
+        "Quanto ti senti esperto da 1 a 5?",
+        min_value=1, max_value=5, value=3
     )
-    utente = st.text_input("", "")
-
-    
-    st.markdown(
-    "<div style='font-size:22px; margin-bottom:5px;'>Scegli il linguaggio</div>",
-    unsafe_allow_html=True
-    )
-
-    linguaggio = st.selectbox("", list(QUESTIONS.keys()))
-
 
     if st.button("START"):
 
@@ -109,28 +96,35 @@ if st.session_state.fase == "intro":
 
         st.session_state.utente = utente
         st.session_state.linguaggio = linguaggio
+        st.session_state.esperienza_bool = esperienza_bool
+        st.session_state.esperienza_livello = esperienza_livello
+
+        # Randomizza le domande una sola volta
+        domande = QUESTIONS[linguaggio]
+        random.shuffle(domande)
+        st.session_state.domande_random = domande
+
         st.session_state.fase = "senza_ai"
         st.rerun()
 
     st.stop()
+
 
 # -----------------------------
 # LOGICA DOMANDE
 # -----------------------------
 utente = st.session_state.utente
 linguaggio = st.session_state.linguaggio
-domande = QUESTIONS[linguaggio]
+domande = st.session_state.domande_random
 
 modalita = "Senza AI" if st.session_state.fase == "senza_ai" else "Con AI"
 
-# Messaggio quando inizia la fase AI
-if st.session_state.fase == "con_ai" and st.session_state.current_index == 0:
-    st.info("🔍 **Aiutati ora con l'AI**")
 
-# Se abbiamo finito le domande della fase corrente
+# -----------------------------
+# FINE FASE SENZA AI
+# -----------------------------
 if st.session_state.current_index >= len(domande):
 
-    # Fine fase SENZA AI → mostra messaggio + pulsante
     if st.session_state.fase == "senza_ai":
         st.success("Hai completato tutte le domande SENZA AI!")
         st.write("Ora inizierai le domande CON AI.")
@@ -139,11 +133,16 @@ if st.session_state.current_index >= len(domande):
             st.session_state.fase = "con_ai"
             st.session_state.current_index = 0
             st.session_state.start_time = None
+
+            # Randomizza di nuovo per la fase AI
+            domande = QUESTIONS[linguaggio]
+            random.shuffle(domande)
+            st.session_state.domande_random = domande
+
             st.rerun()
 
         st.stop()
 
-    # Fine fase CON AI → fine esperimento
     else:
         st.success("Hai completato tutte le domande CON AI!")
         st.write("Esperimento completato.")
@@ -155,7 +154,7 @@ if st.session_state.current_index >= len(domande):
 # -----------------------------
 domanda = domande[st.session_state.current_index]
 
-st.subheader(f"Domanda {domanda['id']} (Livello {domanda['level']})")
+st.subheader(f"Domanda {domanda['id']}")
 
 st.markdown(
     f"<div style='font-size:22px; line-height:1.5;'>{domanda['text']}</div>",
@@ -169,8 +168,9 @@ st.markdown(
 if st.session_state.start_time is None:
     st.session_state.start_time = time.time()
 
+
 # -----------------------------
-# AREA DI TESTO PER IL CODICE
+# AREA CODICE
 # -----------------------------
 codice = st.text_area(
     "Scrivi il tuo codice qui",
@@ -180,7 +180,7 @@ codice = st.text_area(
 
 
 # -----------------------------
-# AI SUGGESTION (solo se fase con AI)
+# AI BUTTON (solo fase AI)
 # -----------------------------
 ai_suggestion = None
 if modalita == "Con AI":
@@ -217,39 +217,33 @@ if st.button("Invia risposta"):
         "utente": utente,
         "linguaggio": linguaggio,
         "domanda_id": domanda["id"],
-        "livello": domanda["level"],
         "modalita": modalita,
         "codice": codice,
         "tempo_secondi": elapsed,
-        "ai_suggestion": ai_suggestion
+        "ai_suggestion": ai_suggestion,
+        "esperienza_bool": st.session_state.esperienza_bool,
+        "esperienza_livello": st.session_state.esperienza_livello
     }
 
-    # Salva in sessione
     st.session_state.answers.append(risposta)
 
-    # -----------------------------
-    # SALVATAGGIO SU GOOGLE SHEETS
-    # -----------------------------
+    # Salvataggio su Google Sheets
     sheet = get_sheet()
-
     sheet.append_row([
         risposta["timestamp"],
         risposta["utente"],
         risposta["linguaggio"],
         risposta["domanda_id"],
-        risposta["livello"],
         risposta["modalita"],
         risposta["codice"],
         risposta["tempo_secondi"],
-        risposta["ai_suggestion"]
+        risposta["ai_suggestion"],
+        risposta["esperienza_bool"],
+        risposta["esperienza_livello"]
     ])
 
     st.success(f"Risposta salvata! Tempo impiegato: {elapsed:.2f} secondi")
 
-    # Passa alla prossima domanda
     st.session_state.start_time = None
     st.session_state.current_index += 1
     st.rerun()
-
-    
-    
