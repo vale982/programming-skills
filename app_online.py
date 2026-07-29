@@ -101,8 +101,9 @@ if st.session_state.fase == "intro":
         domande = QUESTIONS[linguaggio]
         random.shuffle(domande)
         st.session_state.domande_random = domande
-
-        st.session_state.fase = "senza_ai"
+        
+        # Prima con AI
+        st.session_state.fase = "con_ai"
         st.rerun()
 
     st.stop()
@@ -124,12 +125,12 @@ modalita = "Senza AI" if st.session_state.fase == "senza_ai" else "Con AI"
 # -----------------------------
 if st.session_state.current_index >= len(domande):
 
-    if st.session_state.fase == "senza_ai":
-        st.success("Hai completato tutte le domande SENZA AI!")
-        st.write("Ora inizierai le domande CON AI.")
+    if st.session_state.fase == "con_ai":
+        st.success("Hai completato tutte le domande CON AI!")
+        st.write("Ora inizierai le domande SENZA AI.")
 
-        if st.button("Inizia domande con l'aiuto dell'AI"):
-            st.session_state.fase = "con_ai"
+        if st.button("Inizia domande senza l'aiuto dell'AI"):
+            st.session_state.fase = "senza_ai"
             st.session_state.current_index = 0
             st.session_state.start_time = None
 
@@ -143,7 +144,7 @@ if st.session_state.current_index >= len(domande):
         st.stop()
 
     else:
-        st.success("Hai completato tutte le domande CON AI!")
+        st.success("Hai completato tutte le domande SENZA AI!")
         st.write("Esperimento completato.")
         st.stop()
 

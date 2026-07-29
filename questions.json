@@ -12,33 +12,5 @@
       "id": 3,
       "text": "Somma in C due vettori statici di 10 elementi inizializzati a 1 e stampa a video il risultato."
     }
-  ],
-  "Python": [
-    {
-      "id": 1,
-      "text": "Moltiplica in Python due vettori di 10 elementi contenenti 1."
-    },
-    {
-      "id": 2,
-      "text": "Crea in Python una matrice 4x4 e inizializzala a 2."
-    },
-	{
-      "id": 3,
-      "text": "Crea in Python una stringa, copia dentro la frase \"Hello World\" e conta il numero di \"l\"."
-    }
-  ],
-  "Matlab": [
-    {
-      "id": 1,
-      "text": "Crea in Matlab un vettore di 12 elementi, ponili uguale a 1 e somma tutti gli elementi del vettore."
-    },
-    {
-      "id": 2,
-      "text": "Costruisci in Matlab una matrice 5x5, poni sulla diagonale il valore 2 e somma tutte le righe."
-    },
-	{
-      "id": 3,
-      "text": "Crea in Matlab un segnale random lungo 64 campioni e calcola la sua risposta in frequenza."
-    }
   ]
 }
